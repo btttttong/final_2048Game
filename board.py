@@ -7,7 +7,7 @@ class Board:
         self.t = Turtle()
         self.t.hideturtle()
         self.t.penup()
-        self.tiles = [[4, 2, 4, 2], [0, 2, 2, 0], [0, 0, 0, 0], [0, 2, 0, 0]]
+        self.tiles = [[4, 2, 4, 2], [0, 2, 2, 0], [0, 0, 0, 0], [0, 2, 0, 2]]
         # self.tiles = self.create_board()
         self.init_pos = (-200, 0)
 
@@ -125,6 +125,7 @@ class Board:
         """Merge all rows to the Left."""
         t = self.tiles
         for i in range(len(t)):
+            self.shift_left(self.tiles[i])
             for j in range(len(t[0])):
                 if t[i][j - 1] == t[i][j]:
                     t[i][j - 1] += t[i][j]
