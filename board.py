@@ -11,13 +11,6 @@ class Board:
         # self.tiles = self.create_board()
         self.init_pos = (-200, 0)
 
-    # def __str__(self):
-    #     rv = ''
-    #     for row in self.board:
-    #         rv += ''.join('.o'[c] for c in row)
-    #         rv += '\n'
-    #     return rv
-
     def create_board(self):
         tmp = []
         for row in range(4):
@@ -41,36 +34,100 @@ class Board:
 
     def insert_new(self, index):
         t = self.tiles
-        ran = random.randrange(0,3)
-        print(ran)
-        if t[index][ran] == 0:
-            t[ran][index] = 2
+        ran_row = random.randrange(0,3)
+        ran_col = random.randrange(0, 3)
+        if t[ran_row][ran_col] == 0:
+            t[ran_row][ran_col] = 2
+        else:
+            self.insert_new(1)
 
     def go_right(self):
-        print('hello')
-        print(self.tiles)
+        direction = 'right'
+        print(direction)
+        # print(self.tiles)
+        for i in self.tiles:
+            print(i)
         self.arrange()
-        self.merge_cells()
+        self.merge_cells(direction)
         self.arrange()
         self.insert_new(0)
+
+    def go_left(self):
+        direction = 'left'
+        for i in self.tiles:
+            print(i)
+        self.arrange_l()
+        self.merge_cells(direction)
+        self.arrange_l()
+        self.insert_new(3)
+
+    def go_up(self):
+        direction = 'up'
+        for i in self.tiles:
+            print(i)
+        self.arrange_up()
+        self.merge_cells(direction)
+        self.arrange_up()
+        self.insert_new(3)
+
 
     def arrange(self):
         t = self.tiles
         for i in range(len(t)):
             for j in range(len(t)):
                 t[i].sort()
+        print('---------------------')
+        print('t')
+        for i in self.tiles:
+            print(i)
 
-        print('arrange = ', t)
-
-    def merge_cells(self):
+    def arrange_l(self):
         t = self.tiles
         for i in range(len(t)):
-            for j in range(len(t[0])):
-                if t[i][j - 1] == t[i][j]:
-                    t[i][j - 1] += t[i][j]
-                    t[i][j] = 0
+            for j in range(len(t)):
+                t[i].sort(reverse=True)
+        print('---------------------')
+        print('t')
+        for i in self.tiles:
+            print(i)
 
-        print('merge_cells = ', t)
+    def arrange_up(self):
+        t = self.tiles
+        for i in range(len(t)):
+            for j in range(len(t)):
+                t[j].sort()
+        print('---------------------')
+        print('t')
+        for i in self.tiles:
+            print(i)
+
+    def merge_cells(self, direction):
+        t = self.tiles
+        if direction == 'right' or direction == 'left':
+            for i in range(len(t)):
+                for j in range(len(t[0])):
+                    if t[i][j - 1] == t[i][j]:
+                        t[i][j - 1] += t[i][j]
+                        t[i][j] = 0
+        elif direction == 'up':
+            print('merge_cells_up')
+
+        # elif direction == 'left':
+        #     for j in range(len(t[0])):
+        #         for i in range(len(t)):
+        #             try:
+        #                 if t[i][j-1] == t[i][j]:
+        #                     t[i][j-1] *= t[i][j]
+        #                     t[i][j] = 0
+        #             except:
+        #                 pass
+
+        print('---------------------')
+        print('merge_cells')
+        for i in self.tiles:
+            print(i)
+
+
 
 
 
