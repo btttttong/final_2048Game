@@ -7,7 +7,7 @@ class Board:
         self.t = Turtle()
         self.t.hideturtle()
         self.t.penup()
-        self.tiles = [[0, 0, 0, 0], [0, 2, 2, 0], [0, 0, 0, 0], [0, 2, 0, 0]]
+        self.tiles = [[4, 2, 4, 2], [0, 2, 2, 0], [0, 0, 0, 0], [0, 2, 0, 0]]
         # self.tiles = self.create_board()
         self.init_pos = (-200, 0)
 
@@ -68,7 +68,7 @@ class Board:
         self.arrange_up()
         self.merge_cells(direction)
         self.arrange_up()
-        self.insert_new(3)
+        # self.insert_new(3)
 
 
     def arrange(self):
@@ -87,19 +87,39 @@ class Board:
             for j in range(len(t)):
                 t[i].sort(reverse=True)
         print('---------------------')
-        print('t')
+        print('arrange_l')
         for i in self.tiles:
             print(i)
 
     def arrange_up(self):
         t = self.tiles
+        flipped_array = [[0 for i in range(len(t[0]))] for j in range(len(t))]
         for i in range(len(t)):
             for j in range(len(t)):
-                t[j].sort()
+                flipped_array[j][i] = t[i][j]
+
         print('---------------------')
-        print('t')
-        for i in self.tiles:
+        print('flip')
+        # self.tilees = flipped_array
+        for i in range(len(t)):
+            for j in range(len(t)):
+                self.tiles[i][j] = flipped_array[i][j]
+        for i in t:
             print(i)
+
+
+        self.arrange_l()
+        self.merge_cells('left')
+
+        for i in range(len(t)):
+            for j in range(len(t)):
+                flipped_array[j][i] = t[i][j]
+
+        print('---------------------')
+        print('last swap')
+        for i in flipped_array:
+            print(i)
+
 
     def merge_cells(self, direction):
         t = self.tiles
@@ -126,6 +146,11 @@ class Board:
         print('merge_cells')
         for i in self.tiles:
             print(i)
+
+    def m(self):
+        for i in self.tiles:
+            i.reverse()
+
 
 
 
