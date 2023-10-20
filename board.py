@@ -33,6 +33,7 @@ class Board:
     # def init_state(self):
 
     def insert_new(self, index):
+        return
         t = self.tiles
         ran_row = random.randrange(0,3)
         ran_col = random.randrange(0, 3)
@@ -44,21 +45,20 @@ class Board:
     def go_right(self):
         direction = 'right'
         print(direction)
-        # print(self.tiles)
         for i in self.tiles:
             print(i)
-        self.arrange()
-        self.merge_cells(direction)
-        self.arrange()
+        self.mirror()
+        self.merge_cells_left(direction)
+        self.mirror()
         self.insert_new(0)
 
     def go_left(self):
         direction = 'left'
         for i in self.tiles:
             print(i)
-        self.arrange_l()
-        self.merge_cells(direction)
-        self.arrange_l()
+
+        self.merge_cells_left(direction)
+        # self.arrange_l()
         self.insert_new(3)
 
     def go_up(self):
@@ -66,7 +66,7 @@ class Board:
         for i in self.tiles:
             print(i)
         self.arrange_up()
-        self.merge_cells(direction)
+        self.merge_cells_left(direction)
         self.arrange_up()
         # self.insert_new(3)
 
@@ -109,7 +109,7 @@ class Board:
 
 
         self.arrange_l()
-        self.merge_cells('left')
+        self.merge_cells_left('left')
 
         for i in range(len(t)):
             for j in range(len(t)):
@@ -121,35 +121,30 @@ class Board:
             print(i)
 
 
-    def merge_cells(self, direction):
+    def merge_cells_left(self, direction):
+        """Merge all rows to the Left."""
         t = self.tiles
-        if direction == 'right' or direction == 'left':
-            for i in range(len(t)):
-                for j in range(len(t[0])):
-                    if t[i][j - 1] == t[i][j]:
-                        t[i][j - 1] += t[i][j]
-                        t[i][j] = 0
-        elif direction == 'up':
-            print('merge_cells_up')
+        for i in range(len(t)):
+            for j in range(len(t[0])):
+                if t[i][j - 1] == t[i][j]:
+                    t[i][j - 1] += t[i][j]
+                    t[i][j] =  0
+            self.shift_left(self.tiles[i])
 
-        # elif direction == 'left':
-        #     for j in range(len(t[0])):
-        #         for i in range(len(t)):
-        #             try:
-        #                 if t[i][j-1] == t[i][j]:
-        #                     t[i][j-1] *= t[i][j]
-        #                     t[i][j] = 0
-        #             except:
-        #                 pass
-
-        print('---------------------')
         print('merge_cells')
         for i in self.tiles:
             print(i)
 
-    def m(self):
-        for i in self.tiles:
-            i.reverse()
+    def mirror(self):
+        for row in self.tiles:
+            row.reverse()
+
+
+    def shift_left(self, row):
+        while 0 in row:
+            row.remove(0)
+        for k in range(4-len(row)):
+            row.append(0)
 
 
 
