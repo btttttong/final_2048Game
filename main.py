@@ -17,8 +17,9 @@ screen.onkeypress(fun=board.go_right, key="Right")
 # screen.onkeypress(fun=board.go_left, key="Left")
 
 while is_game_on:
+    time.sleep(1)
     screen.update()
     board.draw_tiles()
-    time.sleep(1)
+
 
 screen.mainloop()

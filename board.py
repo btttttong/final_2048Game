@@ -42,8 +42,9 @@ class Board:
     def insert_new(self, index):
         t = self.tiles
         ran = random.randrange(0,3)
-        for j in range(len(t[0])):
-            t[index][ran] = 2
+        print(ran)
+        if t[index][ran] == 0:
+            t[ran][index] = 2
 
     def go_right(self):
         print('hello')
