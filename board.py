@@ -32,15 +32,16 @@ class Board:
 
     # def init_state(self):
 
-    def insert_new(self, index):
+    def insert_new(self):
         return
         t = self.tiles
         ran_row = random.randrange(0,3)
         ran_col = random.randrange(0, 3)
         if t[ran_row][ran_col] == 0:
+            print(ran_row, ran_col)
             t[ran_row][ran_col] = 2
         else:
-            self.insert_new(1)
+            self.insert_new()
 
     def go_right(self):
         direction = 'right'
@@ -50,7 +51,7 @@ class Board:
         self.mirror()
         self.merge_cells_left(direction)
         self.mirror()
-        self.insert_new(0)
+        self.insert_new()
 
     def go_left(self):
         direction = 'left'
@@ -58,17 +59,27 @@ class Board:
             print(i)
 
         self.merge_cells_left(direction)
-        # self.arrange_l()
-        self.insert_new(3)
+        self.insert_new()
 
     def go_up(self):
+        print('-------------------------')
         direction = 'up'
         for i in self.tiles:
             print(i)
-        self.arrange_up()
+        # flip cell > 90 degree
+        self.rotate90()
         self.merge_cells_left(direction)
-        self.arrange_up()
-        # self.insert_new(3)
+        self.rotate90()
+        self.insert_new()
+
+    def go_down(self):
+        print('-------------------------')
+        direction = 'down'
+        for i in self.tiles:
+            print(i)
+        # flip cell > 90 degree
+
+
 
 
     def arrange(self):
@@ -107,7 +118,6 @@ class Board:
         for i in t:
             print(i)
 
-
         self.arrange_l()
         self.merge_cells_left('left')
 
@@ -121,7 +131,7 @@ class Board:
             print(i)
 
 
-    def merge_cells_left(self, direction):
+    def merge_cells_left(self, d):
         """Merge all rows to the Left."""
         t = self.tiles
         for i in range(len(t)):
@@ -139,6 +149,9 @@ class Board:
     def mirror(self):
         for row in self.tiles:
             row.reverse()
+        print('mirror')
+        for i in self.tiles:
+            print(i)
 
 
     def shift_left(self, row):
@@ -146,6 +159,24 @@ class Board:
             row.remove(0)
         for k in range(4-len(row)):
             row.append(0)
+
+    def shift_board(self):
+        pass
+
+    def rotate90(self):
+        t = self.tiles
+        flipped_array = [[0 for i in range(len(t[0]))] for j in range(len(t))]
+        for i in range(len(t)):
+            for j in range(len(t)):
+                flipped_array[j][i] = t[i][j]
+
+        for i in range(len(t)):
+            for j in range(len(t)):
+                self.tiles[i][j] = flipped_array[i][j]
+
+        print('---------rotate90----------')
+        for i in t:
+            print(i)
 
 
 
