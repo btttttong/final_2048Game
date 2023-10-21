@@ -9,14 +9,14 @@ class Board:
         self.t = Turtle()
         self.t.hideturtle()
         self.t.penup()
-        self.tiles = [[4, 2, 4, 2], [0, 2, 2, 0], [0, 0, 0, 0], [0, 2, 0, 2]]
+        # self.tiles = [[4, 2, 4, 2], [0, 2, 2, 0], [0, 0, 0, 0], [0, 2, 0, 2]]
 #         self.tiles = [[0, 0, 0, 0],
 # [0, 0, 0, 0],
 # [0, 2, 4, 0],
 # [4, 4, 2, 4]]
-#         self.tiles = [[0] * BOARD_METRIX for i in range(BOARD_METRIX)]
-#         self.insert_new()
-#         self.insert_new()
+        self.tiles = [[0] * BOARD_METRIX for i in range(BOARD_METRIX)]
+        self.insert_new()
+        self.insert_new()
         self.init_pos = (-150, 100)
         self.score = 0
         try:
