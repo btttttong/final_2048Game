@@ -1,14 +1,27 @@
 import random
 from turtle import Turtle
-
+# i = row
+# j = col
+tile_size = 4
 
 class Board:
     def __init__(self):
         self.t = Turtle()
         self.t.hideturtle()
         self.t.penup()
-        self.tiles = [[4, 2, 4, 2], [0, 2, 2, 0], [0, 0, 0, 0], [0, 2, 0, 2]]
+        # self.tiles = [[4, 2, 4, 2], [0, 2, 2, 0], [0, 0, 0, 0], [0, 2, 0, 2]]
+        self.tiles = [[0] * 4 for i in range(4)]
+        self.insert_new()
+        self.insert_new()
         self.init_pos = (-150, 100)
+        self.score = 0
+        try:
+            f = open("highscore.txt", "r")
+            self.highscore = int(f.read())
+            f.close()
+        except ValueError:
+            self.highscore = 0
+
 
     def print_curr_board(self):
         for i in self.tiles:
@@ -17,32 +30,44 @@ class Board:
     def draw_tiles(self):
         t = self.t
         t.clear()
-        t = self.t
-        self.t.goto(self.init_pos)
+        t.goto(0,150)
+        t.write(f'Score = {self.score} | HighScore = {self.highscore}', align='center', font=('Tahoma', 20, 'normal'))
+        t.goto(self.init_pos)
         for row in range(len(self.tiles)):
             for col in range(len(self.tiles[row])):
                 t.goto(t.xcor() + 50, t.ycor())
                 t.write(self.tiles[row][col], align='center', font=('Tahoma', 20, 'normal'))
             t.goto(t.xcor() - 200, t.ycor() - 50)
 
+    def insert_new(self):
+        t = self.tiles
+        if any(0 in row for row in t):
+            ran_row = random.randrange(0, 3)
+            ran_col = random.randrange(0, 3)
+            while t[ran_row][ran_col] != 0:
+                ran_row = random.randint(0, 3)
+                ran_col = random.randint(0, 3)
+            print(f'-----insert new to this position [{[ran_row]},{[ran_col]}]-------')
+            t[ran_row][ran_col] = 2
+
     def go_right(self):
         self.print_curr_board()
         self.mirror()
         self.merge_cells_left()
         self.mirror()
-        # self.insert_new()
+        self.insert_new()
 
     def go_left(self):
         self.print_curr_board()
         self.merge_cells_left()
-        # self.insert_new()
+        self.insert_new()
 
     def go_up(self):
         self.print_curr_board()
         self.rotate90()
         self.merge_cells_left()
         self.rotate90()
-        # self.insert_new()
+        self.insert_new()
 
     def go_down(self):
         direction = 'up'
@@ -50,6 +75,7 @@ class Board:
         self.rotate90()
         self.merge_cells_right()
         self.rotate90()
+        self.insert_new()
 
 
     def mirror(self):
@@ -64,20 +90,14 @@ class Board:
         t = self.tiles
         for i in range(len(t)):
             self.shift_left(self.tiles[i])
-            print('---------before merge------------')
-            self.print_curr_board()
             for j in range(len(t[0])):
                 # if (j > 0 and t[i][j - 1] == t[i][j]) or (i > 0 and t[i - 1][j] == t[i][j]):
                 if t[i][j - 1] == t[i][j]:
-                    print(f'before: check index {t[i]}')
                     t[i][j - 1] += t[i][j]
+                    self.add_score(t[i][j-1])
                     t[i][j] = 0
                     print(f'after : {t[i]}')
-            print('---------after merge------------')
-            self.print_curr_board()
             self.shift_left(self.tiles[i])
-            print('---------after shift------------')
-            self.print_curr_board()
 
     def shift_left(self, row):
         while 0 in row:
@@ -111,3 +131,11 @@ class Board:
         for i in range(len(t)):
             self.shift_right(self.tiles[i])
             self.go_right()
+
+    def add_score(self, score):
+        print(f'-----------------------curr = {self.score} | high = {self.highscore}')
+        self.score += score
+        if self.score >= self.highscore:
+            with open("highscore.txt", "w") as f:
+                self.highscore = self.score
+                f.write(str(self.highscore))
