@@ -9,14 +9,14 @@ class Board:
         self.t = Turtle()
         self.t.hideturtle()
         self.t.penup()
-        # self.tiles = [[4, 2, 4, 2], [0, 2, 2, 0], [0, 0, 0, 0], [0, 2, 0, 2]]
-#         self.tiles = [[2, 8, 2, 4],
-# [16, 4, 32, 2],
-# [64, 8, 4, 16],
-# [128, 4, 8, 2]]
-        self.tiles = [[0] * BOARD_METRIX for i in range(BOARD_METRIX)]
-        self.insert_new()
-        self.insert_new()
+        self.tiles = [[4, 2, 4, 2], [0, 2, 2, 0], [0, 0, 0, 0], [0, 2, 0, 2]]
+#         self.tiles = [[0, 0, 0, 0],
+# [0, 0, 0, 0],
+# [0, 2, 4, 0],
+# [4, 4, 2, 4]]
+#         self.tiles = [[0] * BOARD_METRIX for i in range(BOARD_METRIX)]
+#         self.insert_new()
+#         self.insert_new()
         self.init_pos = (-150, 100)
         self.score = 0
         try:
@@ -51,10 +51,11 @@ class Board:
             while t[ran_row][ran_col] != 0:
                 ran_row = random.randint(0, 3)
                 ran_col = random.randint(0, 3)
-            print(f'-----insert new to this position [{[ran_row]},{[ran_col]}]-------')
+            # print(f'-----insert new to this position [{[ran_row]},{[ran_col]}]-------')
             t[ran_row][ran_col] = 2
 
     def go_right(self):
+        print('---------------RIGHT-------------------')
         self.print_curr_board()
         self.mirror()
         self.merge_cells_left()
@@ -62,11 +63,13 @@ class Board:
         self.insert_new()
 
     def go_left(self):
+        print('---------------LEFT-------------------')
         self.print_curr_board()
         self.merge_cells_left()
         self.insert_new()
 
     def go_up(self):
+        print('---------------UP-------------------')
         self.print_curr_board()
         self.rotate90()
         self.merge_cells_left()
@@ -74,7 +77,7 @@ class Board:
         self.insert_new()
 
     def go_down(self):
-        direction = 'up'
+        print('---------------DOWN-------------------')
         self.print_curr_board()
         self.rotate90()
         self.merge_cells_right()
@@ -86,22 +89,27 @@ class Board:
         for row in self.tiles:
             row.reverse()
         print('mirror')
-        for i in self.tiles:
-            print(i)
+        # self.print_curr_board()
 
     def merge_cells_left(self):
         """Merge all rows to the Left."""
         t = self.tiles
         for i in range(BOARD_METRIX):
-            self.shift_left(self.tiles[i])
-            for j in range(BOARD_METRIX):
-                # if (j > 0 and t[i][j - 1] == t[i][j]) or (i > 0 and t[i - 1][j] == t[i][j]):
-                if t[i][j - 1] == t[i][j]:
-                    t[i][j - 1] += t[i][j]
-                    self.add_score(t[i][j-1])
-                    t[i][j] = 0
-                    print(f'after : {t[i]}')
-            self.shift_left(self.tiles[i])
+            row = self.tiles[i]
+            self.shift_left(row)
+            j = 0  # Current column index
+
+            while j < BOARD_METRIX - 1:
+                if row[j] == row[j + 1] and row[j] != 0:
+                    # Merge the cells
+                    row[j] *= 2
+                    self.add_score(row[j])
+                    row[j + 1] = 0
+                    j += 2  # Skip the next cell
+                else:
+                    j += 1
+
+            self.shift_left(row)
 
     def shift_left(self, row):
         while 0 in row:
@@ -127,7 +135,7 @@ class Board:
                 self.tiles[i][j] = flipped_array[i][j]
 
         print('---------rotate90----------')
-        self.print_curr_board()
+        # self.print_curr_board()
 
     def merge_cells_right(self):
         """Merge all rows to the right."""
@@ -137,9 +145,8 @@ class Board:
             self.go_right()
 
     def add_score(self, score):
-        print(f'-----------------------curr = {self.score} | high = {self.highscore}')
+        # print(f'-----------------------curr = {self.score} | high = {self.highscore}')
         self.score += score
-        #fixme: incorrect condition to increment score
         if self.score >= self.highscore:
             with open("highscore.txt", "w") as f:
                 self.highscore = self.score
