@@ -1,8 +1,10 @@
 import random
 from turtle import Turtle
+
 # i = row
 # j = col
-tile_size = 4
+BOARD_METRIX = 4
+
 
 class Board:
     def __init__(self):
@@ -10,7 +12,11 @@ class Board:
         self.t.hideturtle()
         self.t.penup()
         # self.tiles = [[4, 2, 4, 2], [0, 2, 2, 0], [0, 0, 0, 0], [0, 2, 0, 2]]
-        self.tiles = [[0] * 4 for i in range(4)]
+        #         self.tiles = [[2, 8, 2, 4],
+        # [16, 4, 32, 2],
+        # [64, 8, 4, 16],
+        # [128, 4, 8, 2]]
+        self.tiles = [[0] * BOARD_METRIX for i in range(BOARD_METRIX)]
         self.insert_new()
         self.insert_new()
         self.init_pos = (-150, 100)
@@ -22,7 +28,6 @@ class Board:
         except ValueError:
             self.highscore = 0
 
-
     def print_curr_board(self):
         for i in self.tiles:
             print(i)
@@ -30,11 +35,11 @@ class Board:
     def draw_tiles(self):
         t = self.t
         t.clear()
-        t.goto(0,150)
+        t.goto(0, 150)
         t.write(f'Score = {self.score} | HighScore = {self.highscore}', align='center', font=('Tahoma', 20, 'normal'))
         t.goto(self.init_pos)
-        for row in range(len(self.tiles)):
-            for col in range(len(self.tiles[row])):
+        for row in range(BOARD_METRIX):
+            for col in range(BOARD_METRIX):
                 t.goto(t.xcor() + 50, t.ycor())
                 t.write(self.tiles[row][col], align='center', font=('Tahoma', 20, 'normal'))
             t.goto(t.xcor() - 200, t.ycor() - 50)
@@ -48,7 +53,7 @@ class Board:
                 ran_row = random.randint(0, 3)
                 ran_col = random.randint(0, 3)
             print(f'-----insert new to this position [{[ran_row]},{[ran_col]}]-------')
-            t[ran_row][ran_col] = 2
+            t[ran_row][ran_col] = random.choice(2, 4)
 
     def go_right(self):
         self.print_curr_board()
@@ -77,7 +82,6 @@ class Board:
         self.rotate90()
         self.insert_new()
 
-
     def mirror(self):
         for row in self.tiles:
             row.reverse()
@@ -88,13 +92,13 @@ class Board:
     def merge_cells_left(self):
         """Merge all rows to the Left."""
         t = self.tiles
-        for i in range(len(t)):
+        for i in range(BOARD_METRIX):
             self.shift_left(self.tiles[i])
-            for j in range(len(t[0])):
+            for j in range(BOARD_METRIX):
                 # if (j > 0 and t[i][j - 1] == t[i][j]) or (i > 0 and t[i - 1][j] == t[i][j]):
                 if t[i][j - 1] == t[i][j]:
                     t[i][j - 1] += t[i][j]
-                    self.add_score(t[i][j-1])
+                    self.add_score(t[i][j - 1])
                     t[i][j] = 0
                     print(f'after : {t[i]}')
             self.shift_left(self.tiles[i])
@@ -102,24 +106,24 @@ class Board:
     def shift_left(self, row):
         while 0 in row:
             row.remove(0)
-        for k in range(4 - len(row)):
+        for k in range(BOARD_METRIX - len(row)):
             row.append(0)
 
     def shift_right(self, row):
         while 0 in row:
             row.remove(0)
-        for k in range(4 - len(row)):
+        for k in range(BOARD_METRIX - len(row)):
             row.insert(k, 0)
 
     def rotate90(self):
         t = self.tiles
-        flipped_array = [[0 for i in range(len(t[0]))] for j in range(len(t))]
-        for i in range(len(t)):
-            for j in range(len(t)):
+        flipped_array = [[0 for i in range(BOARD_METRIX)] for j in range(BOARD_METRIX)]
+        for i in range(BOARD_METRIX):
+            for j in range(BOARD_METRIX):
                 flipped_array[j][i] = t[i][j]
 
-        for i in range(len(t)):
-            for j in range(len(t)):
+        for i in range(BOARD_METRIX):
+            for j in range(BOARD_METRIX):
                 self.tiles[i][j] = flipped_array[i][j]
 
         print('---------rotate90----------')
@@ -128,14 +132,35 @@ class Board:
     def merge_cells_right(self):
         """Merge all rows to the right."""
         t = self.tiles
-        for i in range(len(t)):
+        for i in range(BOARD_METRIX):
             self.shift_right(self.tiles[i])
             self.go_right()
 
     def add_score(self, score):
         print(f'-----------------------curr = {self.score} | high = {self.highscore}')
         self.score += score
+        # fixme: incorrect condition to increment score
         if self.score >= self.highscore:
             with open("highscore.txt", "w") as f:
                 self.highscore = self.score
                 f.write(str(self.highscore))
+
+    def is_game_over(self):
+        t = self.tiles
+        turtle = self.t
+        if any(0 in row for row in t):
+            return True
+        else:
+            for row in range(BOARD_METRIX):
+                for col in range(BOARD_METRIX):
+                    if row < BOARD_METRIX - 1 and t[row][col] == t[row + 1][col]:
+                        return True
+                    if col < BOARD_METRIX - 1 and t[row][col] == t[row][col + 1]:
+                        return True
+            print('*****Game Over*****')
+            turtle.penup()
+            turtle.goto(0, 0)
+            turtle.write("Game Over!", align="center", font=("Tahoma", 80, "normal"))
+            return False
+
+        return True

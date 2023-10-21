@@ -21,5 +21,7 @@ while is_game_on:
     screen.update()
     board.draw_tiles()
 
+    is_game_on = board.is_game_over()
+
 
 screen.mainloop()
